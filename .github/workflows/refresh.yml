@@ -1,9 +1,15 @@
 name: Refresh start/sit board
 
 on:
+  # All crons are UTC. Window target = 5am-8pm America/Chicago (Central).
+  # Baseline is hourly year-round (covers preseason NOW + overnight in-season).
+  # In-season (Sep-Feb) two extra crons add :22/:37/:52 during the 5am-8pm CT
+  # window, split by month to stay correct across the Nov-1 CDT->CST change.
   schedule:
-    - cron: "12 11 * * *"     # daily, ~11:12 UTC (off-peak)
-  workflow_dispatch:           # allow manual runs from the Actions tab
+    - cron: "7 * * * *"                          # hourly, every day (baseline)
+    - cron: "22,37,52 0,10-23 * 9,10 *"          # Sep-Oct (CDT, UTC-5): 5am-8pm CT -> 15-min
+    - cron: "22,37,52 0,1,11-23 * 11,12,1,2 *"   # Nov-Feb (CST, UTC-6): 5am-8pm CT -> 15-min
+  workflow_dispatch:                             # manual run button in the Actions tab
 
 permissions:
   contents: write
