@@ -64,9 +64,21 @@ h1{font-size:19px;margin:0 0 3px}
 .colhead{display:flex;justify-content:space-between;align-items:baseline;padding:.2cqw .4cqw .8cqw}
 .cname{font-weight:700;font-size:clamp(12px,4.4cqw,22px);letter-spacing:.04em;color:var(--accent)}
 .cslots{font-size:clamp(8px,2.6cqw,13px);color:#7a828e}
-.cards{display:flex;flex-direction:column;gap:.65em;font-size:clamp(9.5px,3.15cqw,16px)}
+.cards{display:flex;flex-direction:column;gap:.55em;font-size:clamp(9.5px,3.15cqw,16px)}
 .card{position:relative;background:#1b2129;border:1px solid #263039;border-radius:.55em;
-      padding:.55em .62em .62em}
+      padding:.5em .58em .55em}
+/* wide cards: split into two zones so content uses the horizontal space and the
+   card gets shorter (kills the empty right side + bottom gap). The column is the
+   query container, so this kicks in automatically at low column counts. */
+@container (min-width:250px){
+  .card{display:grid;grid-template-columns:minmax(0,auto) 1fr;column-gap:1em;row-gap:.15em;align-content:start}
+  .name{grid-column:1/-1;grid-row:1}
+  .meta{grid-column:1/-1;grid-row:2;margin:.02em 0 .3em}
+  .proj{grid-column:1;grid-row:3;margin:0}
+  .badges{grid-column:1;grid-row:4;margin:.35em 0 0}
+  .sigs{grid-column:2;grid-row:3/5;align-self:start;padding-left:.9em;
+        border-left:1px solid #2a323d}
+}
 .card.starter{background:#1d2731;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
 .card.bench{opacity:.62}
 .card.na{opacity:.85;border-color:#ff3d9a;box-shadow:0 0 0 1px #ff3d9a inset;background:#241019}
