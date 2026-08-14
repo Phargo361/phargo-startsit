@@ -185,11 +185,19 @@ for i, lg in enumerate(S["leagues"]):
     boards += league_board(lg, i)
 
 CSS = open(os.path.join(os.path.dirname(__file__), "board.css")).read()
+cols_btns = "".join(f"<button data-c='{c}'>{c}</button>" for c in range(2, 8))
+cols_ctrl = (f"<div class='cols-ctrl'>Columns in view:<div class='cols-btns'>{cols_btns}</div>"
+             f"<span class='cols-hint'>(saved on this device)</span></div>")
 JS = ("function pick(i){document.querySelectorAll('.board').forEach((b,n)=>b.hidden=(n!=i));"
       "document.querySelectorAll('.tab').forEach((t,n)=>t.setAttribute('aria-current',n==i?'true':'false'));"
-      "document.querySelectorAll('.board').forEach(b=>b.scrollLeft=0);}"
+      "document.querySelectorAll('.grid').forEach(g=>g.scrollLeft=0);}"
+      "function setCols(n){document.documentElement.style.setProperty('--cols',n);"
+      "try{localStorage.setItem('ss_cols',n)}catch(e){}"
+      "document.querySelectorAll('.cols-btns button').forEach(b=>b.setAttribute('aria-current',b.dataset.c==n?'true':'false'));}"
       "document.addEventListener('DOMContentLoaded',()=>{"
-      "let f=Array.from(document.querySelectorAll('.tab')).findIndex(t=>!t.classList.contains('pre'));"
+      "document.querySelectorAll('.cols-btns button').forEach(b=>b.addEventListener('click',()=>setCols(b.dataset.c)));"
+      "var s=null;try{s=localStorage.getItem('ss_cols')}catch(e){}if(s)setCols(s);"
+      "var f=Array.from(document.querySelectorAll('.tab')).findIndex(t=>!t.classList.contains('pre'));"
       "pick(f<0?0:f);});")
 
 OUT = os.path.join(SCRATCH, "index.html")
@@ -202,6 +210,7 @@ page = ("<!doctype html><html lang='en'><head><meta charset='utf-8'>"
         f"<b class='ps'>slpr</b> Sleeper &middot; <b class='pb'>blend</b> ranks the card &nbsp;|&nbsp; "
         f"chip = lineup slot &middot; &#9650;/&#9660; hot/cold (L3 vs season) &middot; &#10010; injury &middot; "
         f"&#8709; pink = Sleeper says not startable</div>"
+        f"{cols_ctrl}"
         f"<div class='tabs'>{tabs}</div>{boards}</div>\n<script>{JS}</script></body></html>")
 open(OUT, "w", encoding="utf-8").write(page)
 print("wrote", OUT, len(page), "bytes")
