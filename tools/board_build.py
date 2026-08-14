@@ -192,7 +192,7 @@ JS = ("function pick(i){document.querySelectorAll('.board').forEach((b,n)=>b.hid
       "let f=Array.from(document.querySelectorAll('.tab')).findIndex(t=>!t.classList.contains('pre'));"
       "pick(f<0?0:f);});")
 
-OUT = os.path.join(SCRATCH, "phargo_startsit.html")
+OUT = os.path.join(SCRATCH, "index.html")
 page = ("<!doctype html><html lang='en'><head><meta charset='utf-8'>"
         "<meta name='viewport' content='width=device-width, initial-scale=1'>"
         f"<title>Phargo &mdash; Start/Sit, all leagues</title>\n<style>{CSS}</style></head><body>\n"
