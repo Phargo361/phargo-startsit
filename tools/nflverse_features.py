@@ -43,7 +43,7 @@ for pos in ("wr","rb","te"):
     for nm,grp in d.sort_values("week").groupby("player_display_name"):
         gp=len(grp)
         sig[norm(nm)]={"pos":pos.upper(),"gp":int(gp),
-            "snap":int(round(grp.snap_share.mean())) if grp.snap_share.notna().any() else None,
+            "snap":int(round(grp.snap_share.mean()*100)) if grp.snap_share.notna().any() else None,
             "tgt_pg":round(grp.targets.mean(),1),"car_pg":round(grp.carries.mean(),1),
             "ryd_pg":round(grp.receiving_yards.mean(),1),"rush_pg":round(grp.rushing_yards.mean(),1),
             "td":int(grp.gtd.sum()),

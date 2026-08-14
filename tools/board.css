@@ -64,39 +64,33 @@ h1{font-size:19px;margin:0 0 3px}
 .colhead{display:flex;justify-content:space-between;align-items:baseline;padding:.2cqw .4cqw .8cqw}
 .cname{font-weight:700;font-size:clamp(12px,4.4cqw,22px);letter-spacing:.04em;color:var(--accent)}
 .cslots{font-size:clamp(8px,2.6cqw,13px);color:#7a828e}
-.cards{display:flex;flex-direction:column;gap:.55em;font-size:clamp(9.5px,3.15cqw,16px)}
+.cards{display:flex;flex-direction:column;gap:.5em;font-size:clamp(9.5px,3.15cqw,16px)}
+/* V2 "strip" card: line 1 = name + projections (pushed to the right edge so no
+   empty right side); line 2 = one inline usage line + badges. ~2 lines tall. */
 .card{position:relative;background:#1b2129;border:1px solid #263039;border-radius:.55em;
-      padding:.5em .58em .55em}
-/* wide cards: split into two zones so content uses the horizontal space and the
-   card gets shorter (kills the empty right side + bottom gap). The column is the
-   query container, so this kicks in automatically at low column counts. */
-@container (min-width:250px){
-  .card{display:grid;grid-template-columns:minmax(0,auto) 1fr;column-gap:1em;row-gap:.15em;align-content:start}
-  .name{grid-column:1/-1;grid-row:1}
-  .meta{grid-column:1/-1;grid-row:2;margin:.02em 0 .3em}
-  .proj{grid-column:1;grid-row:3;margin:0}
-  .badges{grid-column:1;grid-row:4;margin:.35em 0 0}
-  .sigs{grid-column:2;grid-row:3/5;align-self:start;padding-left:.9em;
-        border-left:1px solid #2a323d}
-}
+      padding:.5em .62em;display:flex;flex-direction:column;gap:.4em}
 .card.starter{background:#1d2731;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
 .card.bench{opacity:.62}
 .card.na{opacity:.85;border-color:#ff3d9a;box-shadow:0 0 0 1px #ff3d9a inset;background:#241019}
 .card.na .name{color:#ff8fc4}
-.badge.na{background:#ff3d9a;color:#1a1a1a}
 .chip{position:absolute;top:-.5em;right:-.5em;background:var(--accent);color:#fff;
       font-size:.82em;font-weight:700;border-radius:999px;padding:.14em .55em;min-width:1.5em;
-      text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.5)}
-.name{font-weight:600;font-size:1.14em;line-height:1.15;padding-right:1.9em}
-.meta{font-size:.9em;color:#7a828e;margin:.1em 0 .45em}
-.proj{display:flex;gap:.35em;margin-bottom:.45em}
-.proj span{font-size:1em;font-weight:700;border-radius:.32em;padding:.08em .4em}
-.sigs{display:flex;flex-direction:column;gap:.15em}
-.sl{font-size:.95em;color:#aab2bd}
-.sl b{color:#e8eaed}
+      text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.5);z-index:1}
+.r1{display:flex;align-items:baseline;justify-content:space-between;gap:.6em;
+    padding-right:2.3em}
+.who{min-width:0}
+.name{font-weight:600;font-size:1.12em;line-height:1.15}
+.meta{font-size:.86em;color:#7a828e;margin-left:.4em;white-space:nowrap}
+.proj{display:flex;gap:.28em;flex:0 0 auto}
+.proj span{font-size:.98em;font-weight:700;border-radius:.32em;padding:.08em .4em}
+.sigrow{display:flex;flex-wrap:wrap;align-items:center;gap:.3em}
+.sig{font-size:.92em;color:#aab2bd}
+.sig b{color:#e8eaed;font-weight:700}
+.sep{color:#465063;margin:0 .34em}
 .muted{color:#6b7280;font-style:italic}
-.badges{display:flex;flex-wrap:wrap;gap:.22em;margin-bottom:.45em}
-.badge{font-size:.85em;font-weight:700;border-radius:.32em;padding:.08em .4em}
+.badges{display:contents}
+.badge.na{background:#ff3d9a;color:#1a1a1a}
+.badge{font-size:.82em;font-weight:700;border-radius:.32em;padding:.08em .4em}
 .badge.hot{background:#3a2412;color:#ffb74d}
 .badge.cold{background:#12283a;color:#64b5f6}
 .badge.inj{background:#3a1519;color:#ef9a9a}

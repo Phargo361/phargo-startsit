@@ -88,22 +88,27 @@ def form_flag(sig):
     if r <= 0.80: return ("cold", f"cooling: L3 {l3:.1f} vs {sea:.1f}")
     return None
 
-def sig_lines(p):
+SEP = "<span class='sep'>&middot;</span>"
+
+def sig_inline(p):
+    """One dot-separated usage line (bold values) for the strip layout."""
     s, pos = p["sig"], p["pos"]
-    if not s: return ["<span class='muted'>no 2025 usage on file</span>"]
-    out = []
+    if not s:
+        return "<span class='muted'>no 2025 usage on file</span>"
+    parts = []
     if pos == "QB":
-        out.append(f"<b>{s.get('att_pg','?')}</b> att/g &middot; <b>{s.get('pyd_pg','?')}</b> pyd/g")
-        out.append(f"<b>{s.get('ptd','?')}</b> pass TD &middot; <b>{s.get('rush_pg','?')}</b> rush yd/g")
+        parts = [f"<b>{s.get('att_pg','?')}</b> att", f"<b>{s.get('pyd_pg','?')}</b> pyd",
+                 f"<b>{s.get('ptd','?')}</b> pTD", f"<b>{s.get('rush_pg','?')}</b> rush yd"]
     else:
-        if s.get("snap") is not None: out.append(f"<b>{s['snap']}%</b> snaps")
+        if s.get("snap") is not None:
+            parts.append(f"<b>{s['snap']}%</b>")
         if pos in ("WR", "TE"):
-            out.append(f"<b>{s.get('tgt_pg','?')}</b> tgt/g &middot; <b>{s.get('ryd_pg','?')}</b> rec yd/g")
-            out.append(f"<b>{s.get('td','?')}</b> TD in {s.get('gp','?')} g")
+            parts += [f"<b>{s.get('tgt_pg','?')}</b> tgt", f"<b>{s.get('ryd_pg','?')}</b> yd",
+                      f"<b>{s.get('td','?')}</b> TD/{s.get('gp','?')}g"]
         else:
-            out.append(f"<b>{s.get('car_pg','?')}</b> car/g &middot; <b>{s.get('tgt_pg','?')}</b> tgt/g")
-            out.append(f"<b>{s.get('rush_pg','?')}</b> rush yd/g &middot; <b>{s.get('td','?')}</b> TD")
-    return out
+            parts += [f"<b>{s.get('car_pg','?')}</b> car", f"<b>{s.get('tgt_pg','?')}</b> tgt",
+                      f"<b>{s.get('rush_pg','?')}</b> yd", f"<b>{s.get('td','?')}</b> TD"]
+    return SEP.join(parts)
 
 def card(p, chip, outline):
     slot = chip.get(p["id"])
@@ -133,12 +138,12 @@ def card(p, chip, outline):
     if not p["startable"]:
         why = "Sleeper 0" if isinstance(p["sleeper"], (int, float)) else "no NFL team / not projected"
         badges += f"<span class='badge na' title='Sleeper has no projection ({why}) &mdash; not startable'>&#8709; no Sleeper</span>"
-    badges_html = f"<div class='badges'>{badges}</div>" if badges else ""
-    sig_html = "".join("<div class='sl'>" + x + "</div>" for x in sig_lines(p))
+    # V2 strip: line 1 = who (name+meta) + projections; line 2 = inline usage + badges
+    who = (f"<div class='who'><span class='name'>{html.escape(p['name'])}</span>"
+           f"<span class='meta'>{html.escape(p.get('team','FA') or 'FA')}{age}</span></div>")
+    sigrow = f"<div class='sigrow'><span class='sig'>{sig_inline(p)}</span>{badges}</div>"
     return (f"<div class='{cls}'{ostyle}>{chip_html}"
-            f"<div class='name'>{html.escape(p['name'])}</div>"
-            f"<div class='meta'>{html.escape(p.get('team','FA') or 'FA')}{age}</div>"
-            f"{proj}{badges_html}<div class='sigs'>{sig_html}</div></div>")
+            f"<div class='r1'>{who}{proj}</div>{sigrow}</div>")
 
 def league_board(lg, idx):
     if not lg["drafted"]:
