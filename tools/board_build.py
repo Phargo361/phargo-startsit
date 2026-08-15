@@ -17,8 +17,16 @@ PROJ, META = S["sleeper_proj"], S["meta"]
 
 def norm(s): return re.sub(r"[^a-z]", "", str(s).lower())
 
-COL_COLOR = {"QB": "#e7298a", "RB": "#1b9e77", "WR": "#d95f02", "TE": "#7570b3",
-             "FLEX": "#f2c200", "SF": "#1fb6c9", "DEF": "#2c3e50"}
+# Sleeper draft position colors (QB rose, RB teal, WR blue, TE orange, DEF tan);
+# FLEX keeps its own yellow and SUPER_FLEX its own violet (Sleeper has no such color).
+COL_COLOR = {"QB": "#fc2b6d", "RB": "#00ceb8", "WR": "#58a7ff", "TE": "#ffae58",
+             "FLEX": "#f2c200", "SF": "#a78bfa", "DEF": "#be9b72"}
+
+def text_on(hexc):
+    """Black or white chip text depending on the accent's brightness."""
+    h = hexc.lstrip("#")
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    return "#141414" if (0.299 * r + 0.587 * g + 0.114 * b) > 140 else "#fff"
 
 # ---------- per-league lineup + card data ----------------------------------
 def build_league(lg):
@@ -116,8 +124,7 @@ def card(p, chip, outline):
     cls = "card starter" if starter else ("card bench na" if not p["startable"] else "card bench")
     ostyle = (f" style='border-color:{outline};box-shadow:0 0 0 1px {outline} inset'"
               if starter and outline else "")
-    ctxt = "#1a1a1a" if outline == COL_COLOR["FLEX"] else "#fff"
-    cstyle = f" style='background:{outline};color:{ctxt}'" if slot and outline else ""
+    cstyle = f" style='background:{outline};color:{text_on(outline)}'" if slot and outline else ""
     chip_html = f"<div class='chip'{cstyle}>{slot}</div>" if slot else ""
     age = f" &middot; {p['age']}y" if p.get("age") else ""
     m, s = p["model"], p["sleeper"]

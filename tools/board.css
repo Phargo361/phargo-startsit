@@ -59,8 +59,8 @@ h1{font-size:19px;margin:0 0 3px}
         border-top:3px solid var(--accent)}
 .column.flexcol{background:#1c1a10;border:1px solid var(--accent);
                 box-shadow:0 0 0 1px rgba(242,194,0,.25)}
-.column.sfcol{background:#0e2024;border:1px solid var(--accent);
-              box-shadow:0 0 0 1px rgba(31,182,201,.25)}
+.column.sfcol{background:#171320;border:1px solid var(--accent);
+              box-shadow:0 0 0 1px rgba(167,139,250,.25)}
 .colhead{display:flex;justify-content:space-between;align-items:baseline;padding:.2cqw .4cqw .8cqw}
 .cname{font-weight:700;font-size:clamp(12px,4.4cqw,22px);letter-spacing:.04em;color:var(--accent)}
 .cslots{font-size:clamp(8px,2.6cqw,13px);color:#7a828e}
