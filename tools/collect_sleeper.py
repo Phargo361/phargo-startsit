@@ -11,21 +11,57 @@ API1 = "https://api.sleeper.app/v1"
 APIP = "https://api.sleeper.com"
 PUID = "325677742303494144"                      # Phargo
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LEAGUES = [
-    ("1st or Last", "1389754074538205184"),
-    ("Buschhhhhhhhhhhh League", "1335758318781616128"),
-    ("And the Award Goes To...", "1312151628572274688"),
-    ("The Axe Man Cometh", "1309393563053744128"),
+
+# Tab order on the board. Leagues Sleeper returns that are not named here are
+# appended in Sleeper's own order, so a new league shows up without a code change.
+# Matched loosely, so a rename like "The Axe Man Cometh" -> "\U0001fa93 The Axe Man
+# Cometh" keeps its slot.
+ORDER = [
+    "1st or Last",
+    "Buschhhhhhhhhhhh League",
+    "And the Award Goes To...",
+    "The Axe Man Cometh",
 ]
+
 
 def get(u):
     req = U.Request(u, headers={"User-Agent": "phargo-startsit/1.0"})
     with U.urlopen(req, timeout=90) as r:
         return json.load(r)
 
+
+def _key(s):
+    return "".join(c for c in (s or "").lower() if c.isalnum())
+
+
+def _rank(name):
+    k = _key(name)
+    for i, want in enumerate(ORDER):
+        w = _key(want)
+        if k == w or w in k or k in w:
+            return i
+    return len(ORDER)
+
+
+def discover():
+    """Phargo's leagues for the current season, straight from Sleeper.
+
+    League ids are NOT stable: Sleeper mints a new one every season, and a league
+    recreated from scratch does not even carry previous_league_id. A hardcoded list
+    therefore goes stale on rollover and the whole run dies on a 404 -- which is
+    exactly what happened to "The Axe Man Cometh". Asking Sleeper which leagues the
+    user is actually in cannot go stale.
+    """
+    season = (get(f"{API1}/state/nfl") or {}).get("league_season")
+    ls = get(f"{API1}/user/{PUID}/leagues/nfl/{season}") or []
+    ls.sort(key=lambda l: (_rank(l.get("name")), l.get("name") or ""))
+    print(f"season {season}: {len(ls)} leagues")
+    return [(l.get("name") or l["league_id"], l["league_id"]) for l in ls]
+
+
 # 1) per-league config + Phargo roster
 leagues = []
-for name, lid in LEAGUES:
+for name, lid in discover():
     L = get(f"{API1}/league/{lid}")
     rosters = get(f"{API1}/league/{lid}/rosters")
     mine = next((r for r in rosters if r.get("owner_id") == PUID
